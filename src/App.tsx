@@ -12,7 +12,11 @@ const App = () => {
     game = new Phaser.Game(config);
   }, []);
 
-  return <div id="game-container"></div>;
+  return (
+    <div className="App-container">
+      <div id="game-container" className="App"></div>
+    </div>
+  );
 };
 
 export default App;
