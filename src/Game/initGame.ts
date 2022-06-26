@@ -1,3 +1,9 @@
+let platforms: Phaser.Physics.Arcade.StaticGroup;
+let player: Phaser.Physics.Arcade.Sprite;
+let stars: Phaser.Physics.Arcade.Group;
+let score: number = 0;
+let scoreText: Phaser.GameObjects.Text;
+
 export const config: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
   width: 800,
@@ -15,10 +21,6 @@ export const config: Phaser.Types.Core.GameConfig = {
   },
   parent: "game-container",
 };
-
-let platforms: Phaser.Physics.Arcade.StaticGroup;
-let player: Phaser.Physics.Arcade.Sprite;
-let stars: Phaser.Physics.Arcade.Group;
 
 function preload() {
   this.load.image("sky", "assets/sky.png");
@@ -73,6 +75,12 @@ function create() {
   stars.children.iterate(function (child: any) {
     child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
   });
+
+  scoreText = this.add.text(16, 16, "score: 0", {
+    fontSize: "32px",
+    fill: "#000",
+  });
+
   this.physics.add.collider(player, platforms);
   this.physics.add.collider(stars, platforms);
   this.physics.add.overlap(player, stars, collectStar, null, this);
@@ -83,6 +91,8 @@ function collectStar(
   star: Phaser.Physics.Arcade.Sprite
 ) {
   star.disableBody(true, true);
+  score += 10;
+  scoreText.setText(`Score: ${score}`);
 }
 
 function update() {
