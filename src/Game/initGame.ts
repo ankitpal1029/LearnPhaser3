@@ -16,8 +16,9 @@ export const config: Phaser.Types.Core.GameConfig = {
   parent: "game-container",
 };
 
-let platforms;
+let platforms: Phaser.Physics.Arcade.StaticGroup;
 let player: Phaser.Physics.Arcade.Sprite;
+let stars: Phaser.Physics.Arcade.Group;
 
 function preload() {
   this.load.image("sky", "assets/sky.png");
@@ -62,7 +63,26 @@ function create() {
     frameRate: 10,
     repeat: -1,
   });
+
+  stars = this.physics.add.group({
+    key: "star",
+    repeat: 11,
+    setXY: { x: 12, y: 0, stepX: 70 },
+  });
+
+  stars.children.iterate(function (child: any) {
+    child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
+  });
   this.physics.add.collider(player, platforms);
+  this.physics.add.collider(stars, platforms);
+  this.physics.add.overlap(player, stars, collectStar, null, this);
+}
+
+function collectStar(
+  player: Phaser.Physics.Arcade.Sprite,
+  star: Phaser.Physics.Arcade.Sprite
+) {
+  star.disableBody(true, true);
 }
 
 function update() {
